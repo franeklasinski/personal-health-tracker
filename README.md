@@ -1,32 +1,41 @@
 # Dziennik Osobisty
 
-Nowoczesna aplikacja webowa do zarządzania zdrowiem i formą fizyczną. Aplikacja pozwala na śledzenie aktywności sportowej, żywienia oraz danych osobistych z wizualizacją na wykresach.
+Aplikacja webowa do zarządzania zdrowiem i formą fizyczną. Aplikacja pozwala na śledzenie aktywności sportowej, żywienia oraz danych osobistych z wizualizacją na wykresach.
 
 ## Funkcje
 
-### 🏃‍♂️ Dziennik Sportowy
+### Dziennik Sportowy
 - Rejestrowanie treningów z datą i czasem trwania
 - Dodawanie zdjęć z treningów
 - Opis aktywności i notatki
 - Przeglądanie historii treningów
 
-### 🍽️ Dziennik Żywieniowy
+### Dziennik Żywieniowy
 - Zapisywanie posiłków według typu (śniadanie, obiad, kolacja, przekąska)
 - Monitorowanie kalorii i spożycia wody
 - Szczegółowe informacje o ilości porcji
 - Notatki dotyczące posiłków
 
-### 📊 Dane Osobiste
+### Dane Osobiste
 - Śledzenie wagi, wzrostu i BMI
 - Monitorowanie tkanki tłuszczowej i masy mięśniowej
 - Interaktywne wykresy zmian w czasie
 - Automatyczne obliczanie BMI z kategoryzacją
 
-### 📅 Kalendarz
+### Kalendarz
 - Miesięczny widok aktywności
 - Wizualizacja dni z treningami
 - Szybki dostęp do dodawania wpisów
 - Podsumowania miesięczne
+
+<img width="1470" height="834" alt="Zrzut ekranu 2025-08-7 o 16 34 50" src="https://github.com/user-attachments/assets/36dd0e12-60fc-42e6-926e-185a5ddfcd11" />
+<img width="1470" height="956" alt="Zrzut ekranu 2025-08-7 o 16 35 02" src="https://github.com/user-attachments/assets/bc983b14-1ad4-45e2-b70b-461be09dc031" />
+<img width="1470" height="956" alt="Zrzut ekranu 2025-08-7 o 16 35 16" src="https://github.com/user-attachments/assets/b6f98023-27e2-45ec-bf71-f5b1f350fc30" />
+<img width="1470" height="956" alt="Zrzut ekranu 2025-08-7 o 16 35 23" src="https://github.com/user-attachments/assets/05202ddc-d6d0-4d16-ace9-d<img width="1470" height="956" alt="Zrzut ekranu 2025-08-7 o 16 35 29" src="https://github.com/user-attachments/assets/f5538817-8eed-4969-8669-56db7da8a946" />
+93ccb685edf" />
+<img width="1470" height="956" alt="Zrzut ekranu 2025-08-7 o 16 35 35" src="https://github.com/user-attachments/assets/307984ad-aadf-4cb8-bc7b-eb949da8d79c" />
+<img width="1470" height="956" alt="Zrzut ekranu 2025-08-7 o 16 35 42" src="https://github.com/user-attachments/assets/ff580cd6-1762-4ce9-87e8-4a1b5f38b1dd" />
+
 
 ## Technologie
 
@@ -149,23 +158,7 @@ dziennikkal/
 - Ograniczenie rozmiaru uploadowanych plików
 - Filtrowanie typów plików
 
-## Możliwe rozszerzenia
 
-- Eksport danych do PDF/Excel
-- Powiadomienia o celach
-- Integracja z urządzeniami fitness
-- Współdzielenie postępów
-- Więcej typów wykresów
-- Aplikacja mobilna
+## Autor
 
-## Wsparcie
-
-W przypadku problemów:
-1. Sprawdź czy wszystkie pakiety są zainstalowane
-2. Upewnij się że port 5000 jest wolny
-3. Sprawdź logi w terminalu
-4. Upewnij się że masz uprawnienia do zapisu w folderze
-
-## Licencja
-
-Projekt utworzony dla użytku osobistego. Możesz modyfikować i dostosowywać według potrzeb.
+Projekt utworzony dla użytku osobistego. Możesz modyfikować i dostosowywać według potrzeb. Franciszek Łasiński projekt wykonany z pomocą github copilot
