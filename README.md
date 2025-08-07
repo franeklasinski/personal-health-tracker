@@ -31,8 +31,8 @@ Aplikacja webowa do zarządzania zdrowiem i formą fizyczną. Aplikacja pozwala 
 <img width="1470" height="834" alt="Zrzut ekranu 2025-08-7 o 16 34 50" src="https://github.com/user-attachments/assets/36dd0e12-60fc-42e6-926e-185a5ddfcd11" />
 <img width="1470" height="956" alt="Zrzut ekranu 2025-08-7 o 16 35 02" src="https://github.com/user-attachments/assets/bc983b14-1ad4-45e2-b70b-461be09dc031" />
 <img width="1470" height="956" alt="Zrzut ekranu 2025-08-7 o 16 35 16" src="https://github.com/user-attachments/assets/b6f98023-27e2-45ec-bf71-f5b1f350fc30" />
-<img width="1470" height="956" alt="Zrzut ekranu 2025-08-7 o 16 35 23" src="https://github.com/user-attachments/assets/05202ddc-d6d0-4d16-ace9-d<img width="1470" height="956" alt="Zrzut ekranu 2025-08-7 o 16 35 29" src="https://github.com/user-attachments/assets/f5538817-8eed-4969-8669-56db7da8a946" />
-93ccb685edf" />
+<img width="1470" height="956" alt="Zrzut ekranu 2025-08-7 o 16 35 23" src="https://github.com/user-attachments/assets/cea61c06-7341-46cd-8879-969acce5c1e1" />
+
 <img width="1470" height="956" alt="Zrzut ekranu 2025-08-7 o 16 35 35" src="https://github.com/user-attachments/assets/307984ad-aadf-4cb8-bc7b-eb949da8d79c" />
 <img width="1470" height="956" alt="Zrzut ekranu 2025-08-7 o 16 35 42" src="https://github.com/user-attachments/assets/ff580cd6-1762-4ce9-87e8-4a1b5f38b1dd" />
 
