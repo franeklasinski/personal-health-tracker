@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block title %}Dziennik Sportowy{% endblock %}
+
+{% block body_class %}bg-sport{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-running text-primary"></i> Dziennik Sportowy</h2>
+    <a href="{{ url_for('add_sport') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Dodaj Trening
+    </a>
+</div>
+
+{% if entries %}
+<div class="row">
+    {% for entry in entries %}
+    <div class="col-md-6 col-lg-4 mb-4">
+        <div class="card h-100">
+            {% if entry.photo_filename %}
+            <img src="{{ url_for('static', filename='uploads/' + entry.photo_filename) }}" 
+                 class="card-img-top photo-trigger" 
+                 style="height: 200px; object-fit: cover; cursor: pointer;" 
+                 alt="Zdjęcie z treningu"
+                 data-bs-toggle="modal" 
+                 data-bs-target="#sportPhotoModal{{ entry.id }}"
+                 loading="lazy">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ entry.activity }}</h5>
+                <p class="card-text">
+                    <small class="text-muted">
+                        <i class="fas fa-calendar"></i> {{ entry.date.strftime('%d.%m.%Y') }}
+                    </small>
+                </p>
+                {% if entry.duration %}
+                <p class="card-text">
+                    <i class="fas fa-clock"></i> Czas: {{ entry.duration }} min
+                </p>
+                {% endif %}
+                {% if entry.notes %}
+                <p class="card-text">{{ entry.notes[:100] }}{% if entry.notes|length > 100 %}...{% endif %}</p>
+                {% endif %}
+                
+                <!-- Przyciski akcji -->
+                <div class="d-flex gap-2 mt-2">
+                    <a href="{{ url_for('edit_sport', id=entry.id) }}" class="btn btn-outline-primary btn-sm flex-fill">
+                        <i class="fas fa-edit"></i> Edytuj
+                    </a>
+                    <form method="POST" action="{{ url_for('delete_sport', id=entry.id) }}" class="flex-fill">
+                        <button type="submit" class="btn btn-outline-danger btn-sm w-100" 
+                                onclick="return confirm('Czy na pewno chcesz usunąć ten trening?')">
+                            <i class="fas fa-trash"></i> Usuń
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                <small>Dodano: {{ entry.created_at.strftime('%d.%m.%Y %H:%M') }}</small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="text-center py-5">
+    <i class="fas fa-running fa-3x text-muted mb-3"></i>
+    <h4 class="text-muted">Brak wpisów sportowych</h4>
+    <p class="text-muted">Dodaj swój pierwszy trening aby rozpocząć!</p>
+    <a href="{{ url_for('add_sport') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Dodaj Pierwszy Trening
+    </a>
+</div>
+{% endif %}
+
+<!-- Modały zdjęć -->
+{% for entry in entries %}
+    {% if entry.photo_filename %}
+    <div class="modal fade" id="sportPhotoModal{{ entry.id }}" tabindex="-1" aria-labelledby="sportPhotoModalLabel{{ entry.id }}" aria-hidden="true">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content bg-black">
+                <div class="modal-header bg-black text-white border-0 position-absolute" style="z-index: 1060; top: 0; left: 0; right: 0;">
+                    <h5 class="modal-title text-white" id="sportPhotoModalLabel{{ entry.id }}">
+                        <i class="fas fa-running"></i> {{ entry.activity }}
+                        <small class="text-light ms-2">{{ entry.date.strftime('%d.%m.%Y') }}</small>
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Zamknij"></button>
+                </div>
+                <div class="modal-body p-0 bg-black d-flex align-items-center justify-content-center" style="height: 100vh; overflow: auto;">
+                    <img src="{{ url_for('static', filename='uploads/' + entry.photo_filename) }}" 
+                         class="img-fluid" 
+                         alt="Zdjęcie treningu: {{ entry.activity }}"
+                         style="max-width: 100%; max-height: 100%; object-fit: contain; cursor: pointer;"
+                         onclick="this.style.maxWidth = this.style.maxWidth === 'none' ? '100%' : 'none'; this.style.maxHeight = this.style.maxHeight === 'none' ? '100%' : 'none';">
+                </div>
+                <div class="modal-footer bg-black border-0 position-absolute" style="z-index: 1060; bottom: 0; left: 0; right: 0;">
+                    {% if entry.notes %}
+                    <div class="flex-grow-1 text-start">
+                        <small class="text-light">{{ entry.notes }}</small>
+                    </div>
+                    {% endif %}
+                    <div class="btn-group" role="group">
+                        <a href="{{ url_for('edit_sport', id=entry.id) }}" class="btn btn-outline-light btn-sm">
+                            <i class="fas fa-edit"></i> Edytuj
+                        </a>
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i> Zamknij
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% endfor %}
+
+<script>
+// System obsługi zdjęć
+document.addEventListener('DOMContentLoaded', function() {
+    if (typeof bootstrap === 'undefined') {
+        console.error('Bootstrap JavaScript nie jest załadowany!');
+        return;
+    }
+    
+    // Obsługa lazy loading dla miniatur
+    const images = document.querySelectorAll('img[loading="lazy"]');
+    images.forEach(img => {
+        img.addEventListener('load', function() {
+            this.classList.add('loaded');
+            this.style.opacity = '1';
+        });
+        
+        if (img.complete) {
+            img.classList.add('loaded');
+            img.style.opacity = '1';
+        }
+    });
+    
+    // Inicjalizacja modali zdjęć
+    const photoModalElements = document.querySelectorAll('[id^="sportPhotoModal"]');
+    photoModalElements.forEach(modalElement => {
+        const modal = new bootstrap.Modal(modalElement, {
+            backdrop: true,
+            keyboard: true,
+            focus: true
+        });
+        
+        // Obsługa zamykania na ESC
+        modalElement.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                modal.hide();
+            }
+        });
+    });
+    
+    console.log('Zainicjalizowano modali zdjęć:', photoModalElements.length);
+});
+</script>
+{% endblock %}

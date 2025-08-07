@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Dodaj Posiłek{% endblock %}
+
+{% block body_class %}bg-nutrition{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-plus"></i> Dodaj Nowy Posiłek</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="date" class="form-label">Data posiłku</label>
+                            <input type="date" class="form-control" id="date" name="date" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="meal_type" class="form-label">Typ posiłku</label>
+                            <select class="form-control" id="meal_type" name="meal_type" required>
+                                <option value="">Wybierz typ posiłku</option>
+                                <option value="śniadanie">Śniadanie</option>
+                                <option value="obiad">Obiad</option>
+                                <option value="kolacja">Kolacja</option>
+                                <option value="przekąska">Przekąska</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="food_item" class="form-label">Co jadłeś/piłeś?</label>
+                        <input type="text" class="form-control" id="food_item" name="food_item" 
+                               placeholder="np. Owsianka z owocami, Kurczak z ryżem" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="quantity" class="form-label">Ilość/Porcja</label>
+                            <input type="text" class="form-control" id="quantity" name="quantity" 
+                                   placeholder="np. 1 miska, 200g, 2 kromki">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="calories" class="form-label">Kalorie (kcal)</label>
+                            <input type="number" class="form-control" id="calories" name="calories" 
+                                   placeholder="np. 350" min="0">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="water_ml" class="form-label">Spożyta woda (ml)</label>
+                        <input type="number" class="form-control" id="water_ml" name="water_ml" 
+                               placeholder="np. 250" min="0" value="0">
+                        <div class="form-text">Podaj ilość wody wypitej przy tym posiłku</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notatki</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="3" 
+                                  placeholder="Dodatkowe informacje o posiłku, samopoczuciu po jedzeniu..."></textarea>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('nutrition') }}" class="btn btn-secondary me-md-2">Anuluj</a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Zapisz Posiłek
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Ustawienie dzisiejszej daty jako domyślnej
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('date').valueAsDate = new Date();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,225 @@
+{% extends "base.html" %}
+
+{% block title %}Kalendarz{% endblock %}
+
+{% block body_class %}bg-calendar{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-calendar text-primary"></i> Kalendarz Aktywności</h2>
+    <div>
+        <a href="{{ url_for('add_sport') }}" class="btn btn-primary me-2">
+            <i class="fas fa-plus"></i> Dodaj Trening
+        </a>
+        <a href="{{ url_for('add_nutrition') }}" class="btn btn-success">
+            <i class="fas fa-plus"></i> Dodaj Posiłek
+        </a>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h5><i class="fas fa-calendar-alt"></i> Twoja aktywność w tym miesiącu</h5>
+    </div>
+    <div class="card-body">
+        <div id="calendar-container">
+            <!-- Kalendarz będzie tutaj wygenerowany przez JavaScript -->
+        </div>
+    </div>
+</div>
+
+<!-- Legenda -->
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h6><i class="fas fa-info-circle"></i> Legenda</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-flex align-items-center mb-2">
+                    <div class="calendar-legend-color bg-primary me-2"></div>
+                    <span>Dzień z treningiem</span>
+                </div>
+                <div class="d-flex align-items-center mb-2">
+                    <div class="calendar-legend-color bg-success me-2"></div>
+                    <span>Dzień z wpisem żywieniowym</span>
+                </div>
+                <div class="d-flex align-items-center">
+                    <div class="calendar-legend-color bg-light border me-2"></div>
+                    <span>Dzień bez aktywności</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h6><i class="fas fa-chart-bar"></i> Statystyki miesiąca</h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <h4 class="text-primary">{{ calendar_data|length }}</h4>
+                        <small class="text-muted">Dni z aktywnością</small>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-success">
+                            {% set sport_count = 0 %}
+                            {% for date, activities in calendar_data.items() %}
+                                {% for activity in activities %}
+                                    {% if activity.type == 'sport' %}
+                                        {% set sport_count = sport_count + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                            {{ sport_count }}
+                        </h4>
+                        <small class="text-muted">Treningi</small>
+                    </div>
+                </div>
+                <div class="row text-center mt-2">
+                    <div class="col-6">
+                        <h4 class="text-warning">
+                            {% set nutrition_count = 0 %}
+                            {% for date, activities in calendar_data.items() %}
+                                {% for activity in activities %}
+                                    {% if activity.type == 'nutrition' %}
+                                        {% set nutrition_count = nutrition_count + 1 %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                            {{ nutrition_count }}
+                        </h4>
+                        <small class="text-muted">Posiłki</small>
+                    </div>
+                    <div class="col-6">
+                        <h4 class="text-info">
+                            {% set days_with_both = 0 %}
+                            {% for date, activities in calendar_data.items() %}
+                                {% set has_sport = activities|selectattr('type', 'equalto', 'sport')|list|length > 0 %}
+                                {% set has_nutrition = activities|selectattr('type', 'equalto', 'nutrition')|list|length > 0 %}
+                                {% if has_sport and has_nutrition %}
+                                    {% set days_with_both = days_with_both + 1 %}
+                                {% endif %}
+                            {% endfor %}
+                            {{ days_with_both }}
+                        </h4>
+                        <small class="text-muted">Dni kompletne</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Dane kalendarzowe z serwera
+const calendarData = {{ calendar_data|tojson|safe }};
+
+// Funkcja do generowania kalendarza
+function generateCalendar() {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = now.getMonth();
+    
+    // Pierwszy dzień miesiąca
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    
+    // Nazwy dni tygodnia
+    const dayNames = ['Pon', 'Wt', 'Śr', 'Czw', 'Pt', 'Sob', 'Nie'];
+    const monthNames = ['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
+                       'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'];
+    
+    let calendarHTML = `
+        <div class="text-center mb-3">
+            <h4>${monthNames[month]} ${year}</h4>
+        </div>
+        <div class="row">
+    `;
+    
+    // Nagłówki dni tygodnia
+    dayNames.forEach(day => {
+        calendarHTML += `<div class="col text-center fw-bold mb-2">${day}</div>`;
+    });
+    
+    calendarHTML += '</div><div class="calendar-grid">';
+    
+    // Początkowe puste komórki
+    const startDay = (firstDay.getDay() + 6) % 7; // Poniedziałek = 0
+    for (let i = 0; i < startDay; i++) {
+        calendarHTML += '<div class="calendar-day empty"></div>';
+    }
+    
+    // Dni miesiąca
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const hasActivity = calendarData[dateStr];
+        const isToday = day === now.getDate() && month === now.getMonth() && year === now.getFullYear();
+        
+        let dayClass = 'calendar-day';
+        let content = `<div class="day-number">${day}</div>`;
+        
+        if (isToday) {
+            dayClass += ' today';
+        }
+        
+        if (hasActivity) {
+            dayClass += ' has-activity';
+            content += '<div class="activity-indicators">';
+            
+            // Sprawdź czy jest trening
+            const hasSport = hasActivity.some(activity => activity.type === 'sport');
+            const hasNutrition = hasActivity.some(activity => activity.type === 'nutrition');
+            
+            if (hasSport) {
+                content += '<span class="activity-dot sport" title="Trening"></span>';
+            }
+            if (hasNutrition) {
+                content += '<span class="activity-dot nutrition" title="Żywienie"></span>';
+            }
+            
+            content += '</div>';
+            
+            // Tooltip z informacjami
+            let tooltip = '';
+            hasActivity.forEach(activity => {
+                if (activity.type === 'sport') {
+                    tooltip += `🏃 ${activity.activity}`;
+                    if (activity.duration) {
+                        tooltip += ` (${activity.duration} min)`;
+                    }
+                    tooltip += '\\n';
+                } else if (activity.type === 'nutrition') {
+                    tooltip += `🍽️ ${activity.meal_type}: ${activity.food_item}`;
+                    if (activity.calories) {
+                        tooltip += ` (${activity.calories} kcal)`;
+                    }
+                    tooltip += '\\n';
+                }
+            });
+            
+            if (tooltip) {
+                dayClass += '" title="' + tooltip.trim();
+            }
+        }
+        
+        calendarHTML += `<div class="${dayClass}" onclick="openDay('${dateStr}')">${content}</div>`;
+    }
+    
+    calendarHTML += '</div>';
+    
+    document.getElementById('calendar-container').innerHTML = calendarHTML;
+}
+
+// Generuj kalendarz po załadowaniu strony
+document.addEventListener('DOMContentLoaded', generateCalendar);
+
+// Funkcja do otwierania szczegółów dnia
+function openDay(dateStr) {
+    window.location.href = `/day/${dateStr}`;
+}
+</script>
+{% endblock %}

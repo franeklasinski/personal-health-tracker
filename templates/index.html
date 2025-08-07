@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Strona Główna - Dziennik Osobisty{% endblock %}
+
+{% block body_class %}bg-home{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="jumbotron bg-gradient p-5 rounded-3 text-white mb-4" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+            <h1 class="display-4">Witaj w Dzienniku Osobistym!</h1>
+            <p class="lead">Zarządzaj swoją aktywnością fizyczną, żywieniem i danymi osobistymi w jednym miejscu.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-running fa-3x text-primary"></i>
+                </div>
+                <h5 class="card-title">Dziennik Sportowy</h5>
+                <p class="card-text">Zapisuj swoje treningi, dodawaj zdjęcia i śledź postępy w aktivności fizycznej.</p>
+                <a href="{{ url_for('sport') }}" class="btn btn-primary">Zobacz treningi</a>
+                <a href="{{ url_for('add_sport') }}" class="btn btn-outline-primary ms-2">Dodaj trening</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-utensils fa-3x text-success"></i>
+                </div>
+                <h5 class="card-title">Dziennik Żywieniowy</h5>
+                <p class="card-text">Monitoruj swoje posiłki, kalorie i spożycie wody. Prowadź zdrową dietę.</p>
+                <a href="{{ url_for('nutrition') }}" class="btn btn-success">Zobacz posiłki</a>
+                <a href="{{ url_for('add_nutrition') }}" class="btn btn-outline-success ms-2">Dodaj posiłek</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-user fa-3x text-info"></i>
+                </div>
+                <h5 class="card-title">Dane Osobiste</h5>
+                <p class="card-text">Śledź swoją wagę, wzrost, BMI i inne parametry zdrowotne z wykresami.</p>
+                <a href="{{ url_for('personal') }}" class="btn btn-info">Zobacz dane</a>
+                <a href="{{ url_for('add_personal') }}" class="btn btn-outline-info ms-2">Dodaj pomiar</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-calendar-alt"></i> Szybki Dostęp do Kalendarza</h5>
+            </div>
+            <div class="card-body">
+                <p>Sprawdź swoje aktywności w kalendarzu miesięcznym.</p>
+                <a href="{{ url_for('calendar') }}" class="btn btn-primary">
+                    <i class="fas fa-calendar"></i> Otwórz Kalendarz
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

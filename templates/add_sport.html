@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Dodaj Trening{% endblock %}
+
+{% block body_class %}bg-sport{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h4><i class="fas fa-plus"></i> Dodaj Nowy Trening</h4>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="date" class="form-label">Data treningu</label>
+                            <input type="date" class="form-control" id="date" name="date" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="activity" class="form-label">Rodzaj aktywności</label>
+                            <input type="text" class="form-control" id="activity" name="activity" 
+                                   placeholder="np. Bieganie, Siłownia, Joga" required>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="duration" class="form-label">Czas trwania (minuty)</label>
+                        <input type="number" class="form-control" id="duration" name="duration" 
+                               placeholder="np. 30" min="1">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="photo" class="form-label">Zdjęcie z treningu</label>
+                        <input type="file" class="form-control" id="photo" name="photo" 
+                               accept="image/*">
+                        <div class="form-text">Wspierane formaty: JPG, PNG, GIF (max 16MB)</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="notes" class="form-label">Notatki</label>
+                        <textarea class="form-control" id="notes" name="notes" rows="4" 
+                                  placeholder="Opisz swój trening, samopoczucie, osiągnięcia..."></textarea>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="{{ url_for('sport') }}" class="btn btn-secondary me-md-2">Anuluj</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Zapisz Trening
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Ustawienie dzisiejszej daty jako domyślnej
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('date').valueAsDate = new Date();
+});
+</script>
+{% endblock %}

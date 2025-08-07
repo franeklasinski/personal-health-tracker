@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}Dziennik Żywieniowy{% endblock %}
+
+{% block body_class %}bg-nutrition{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-utensils text-success"></i> Dziennik Żywieniowy</h2>
+    <a href="{{ url_for('add_nutrition') }}" class="btn btn-success">
+        <i class="fas fa-plus"></i> Dodaj Posiłek
+    </a>
+</div>
+
+{% if entries %}
+<div class="row">
+    {% for entry in entries %}
+    <div class="col-md-6 mb-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                        <h6 class="card-title">
+                            <span class="badge bg-{{ 'primary' if entry.meal_type == 'śniadanie' else 'warning' if entry.meal_type == 'obiad' else 'info' if entry.meal_type == 'kolacja' else 'secondary' }}">
+                                {{ entry.meal_type.title() }}
+                            </span>
+                        </h6>
+                        <h5>{{ entry.food_item }}</h5>
+                    </div>
+                    <small class="text-muted">{{ entry.date.strftime('%d.%m.%Y') }}</small>
+                </div>
+                
+                <div class="row mt-2">
+                    {% if entry.quantity %}
+                    <div class="col-6">
+                        <small class="text-muted">Ilość:</small><br>
+                        <strong>{{ entry.quantity }}</strong>
+                    </div>
+                    {% endif %}
+                    {% if entry.calories %}
+                    <div class="col-6">
+                        <small class="text-muted">Kalorie:</small><br>
+                        <strong>{{ entry.calories }} kcal</strong>
+                    </div>
+                    {% endif %}
+                </div>
+
+                {% if entry.water_ml > 0 %}
+                <div class="mt-2">
+                    <small class="text-muted">Woda:</small>
+                    <strong class="text-info">{{ entry.water_ml }} ml</strong>
+                </div>
+                {% endif %}
+
+                {% if entry.notes %}
+                <div class="mt-2">
+                    <small class="text-muted">Notatki:</small><br>
+                    <small>{{ entry.notes[:80] }}{% if entry.notes|length > 80 %}...{% endif %}</small>
+                </div>
+                {% endif %}
+                
+                <!-- Przyciski akcji -->
+                <div class="d-flex gap-2 mt-2">
+                    <a href="{{ url_for('edit_nutrition', id=entry.id) }}" class="btn btn-outline-primary btn-sm flex-fill">
+                        <i class="fas fa-edit"></i> Edytuj
+                    </a>
+                    <form method="POST" action="{{ url_for('delete_nutrition', id=entry.id) }}" class="flex-fill">
+                        <button type="submit" class="btn btn-outline-danger btn-sm w-100" 
+                                onclick="return confirm('Czy na pewno chcesz usunąć ten posiłek?')">
+                            <i class="fas fa-trash"></i> Usuń
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="card-footer text-muted">
+                <small>Dodano: {{ entry.created_at.strftime('%d.%m %H:%M') }}</small>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Podsumowanie dzienne -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h5><i class="fas fa-chart-pie"></i> Podsumowanie z ostatnich dni</h5>
+    </div>
+    <div class="card-body">
+        <div class="row text-center">
+            <div class="col-md-3">
+                <h3 class="text-primary">{{ entries|selectattr('meal_type', 'equalto', 'śniadanie')|list|length }}</h3>
+                <small class="text-muted">Śniadania</small>
+            </div>
+            <div class="col-md-3">
+                <h3 class="text-warning">{{ entries|selectattr('meal_type', 'equalto', 'obiad')|list|length }}</h3>
+                <small class="text-muted">Obiady</small>
+            </div>
+            <div class="col-md-3">
+                <h3 class="text-info">{{ entries|selectattr('meal_type', 'equalto', 'kolacja')|list|length }}</h3>
+                <small class="text-muted">Kolacje</small>
+            </div>
+            <div class="col-md-3">
+                <h3 class="text-secondary">{{ entries|selectattr('meal_type', 'equalto', 'przekąska')|list|length }}</h3>
+                <small class="text-muted">Przekąski</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<div class="text-center py-5">
+    <i class="fas fa-utensils fa-3x text-muted mb-3"></i>
+    <h4 class="text-muted">Brak wpisów żywieniowych</h4>
+    <p class="text-muted">Zacznij zapisywać swoje posiłki!</p>
+    <a href="{{ url_for('add_nutrition') }}" class="btn btn-success">
+        <i class="fas fa-plus"></i> Dodaj Pierwszy Posiłek
+    </a>
+</div>
+{% endif %}
+{% endblock %}

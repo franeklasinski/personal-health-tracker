@@ -1,0 +1,294 @@
+{% extends "base.html" %}
+
+{% block title %}Dane Osobiste{% endblock %}
+
+{% block body_class %}bg-personal{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-user text-info"></i> Dane Osobiste</h2>
+    <a href="{{ url_for('add_personal') }}" class="btn btn-info">
+        <i class="fas fa-plus"></i> Dodaj Pomiar
+    </a>
+</div>
+
+<!-- Wykresy -->
+{% if weight_chart or bmi_chart or body_composition_chart or calories_chart or water_chart or activity_chart or meal_distribution_chart %}
+
+<!-- Pierwsze rzędy wykresów - dane osobiste -->
+<div class="row mb-4">
+    {% if weight_chart %}
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5><i class="fas fa-weight"></i> Wykres Wagi</h5>
+            </div>
+            <div class="card-body">
+                <div id="weight-chart"></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if bmi_chart %}
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5><i class="fas fa-chart-line"></i> Wykres BMI</h5>
+            </div>
+            <div class="card-body">
+                <div id="bmi-chart"></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Drugi rząd wykresów - skład ciała i aktywność -->
+<div class="row mb-4">
+    {% if body_composition_chart %}
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-warning text-white">
+                <h5><i class="fas fa-heart"></i> Skład Ciała</h5>
+            </div>
+            <div class="card-body">
+                <div id="body-composition-chart"></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if activity_chart %}
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5><i class="fas fa-running"></i> Aktywność Sportowa</h5>
+            </div>
+            <div class="card-body">
+                <div id="activity-chart"></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Trzeci rząd wykresów - żywienie -->
+<div class="row mb-4">
+    {% if calories_chart %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-danger text-white">
+                <h5><i class="fas fa-fire"></i> Kalorie</h5>
+            </div>
+            <div class="card-body">
+                <div id="calories-chart"></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if water_chart %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5><i class="fas fa-tint"></i> Spożycie Wody</h5>
+            </div>
+            <div class="card-body">
+                <div id="water-chart"></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if meal_distribution_chart %}
+    <div class="col-md-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-secondary text-white">
+                <h5><i class="fas fa-chart-pie"></i> Rozkład Posiłków</h5>
+            </div>
+            <div class="card-body">
+                <div id="meal-distribution-chart"></div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+{% endif %}
+
+<!-- Tabela z danymi -->
+{% if entries %}
+<div class="card">
+    <div class="card-header">
+        <h5><i class="fas fa-table"></i> Historia Pomiarów</h5>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Data</th>
+                        <th>Waga (kg)</th>
+                        <th>Wzrost (cm)</th>
+                        <th>BMI</th>
+                        <th>Tkanka tłuszczowa (%)</th>
+                        <th>Masa mięśniowa (kg)</th>
+                        <th>Notatki</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in entries %}
+                    <tr>
+                        <td>{{ entry.date.strftime('%d.%m.%Y') }}</td>
+                        <td>
+                            {% if entry.weight %}
+                                <strong>{{ entry.weight }}</strong>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if entry.height %}
+                                {{ entry.height }}
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if entry.bmi %}
+                                <span class="badge bg-{{ 'success' if entry.bmi >= 18.5 and entry.bmi < 25 else 'warning' if entry.bmi < 18.5 or (entry.bmi >= 25 and entry.bmi < 30) else 'danger' }}">
+                                    {{ entry.bmi }}
+                                </span>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if entry.body_fat %}
+                                {{ entry.body_fat }}%
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if entry.muscle_mass %}
+                                {{ entry.muscle_mass }}
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if entry.notes %}
+                                <small>{{ entry.notes[:50] }}{% if entry.notes|length > 50 %}...{% endif %}</small>
+                            {% else %}
+                                <span class="text-muted">-</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Statystyki -->
+{% if entries %}
+<div class="row mt-4">
+    <div class="col-md-6">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="card-title"><i class="fas fa-info-circle"></i> Aktualne Dane</h6>
+                {% set latest = entries[0] %}
+                <div class="row">
+                    <div class="col-6">
+                        <strong>Waga:</strong> {{ latest.weight if latest.weight else '-' }} kg<br>
+                        <strong>Wzrost:</strong> {{ latest.height if latest.height else '-' }} cm
+                    </div>
+                    <div class="col-6">
+                        <strong>BMI:</strong> {{ latest.bmi if latest.bmi else '-' }}<br>
+                        <strong>Data:</strong> {{ latest.date.strftime('%d.%m.%Y') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="card-title"><i class="fas fa-target"></i> Informacje BMI</h6>
+                <small>
+                    <strong>Niedowaga:</strong> BMI < 18.5<br>
+                    <strong>Norma:</strong> BMI 18.5 - 24.9<br>
+                    <strong>Nadwaga:</strong> BMI 25.0 - 29.9<br>
+                    <strong>Otyłość:</strong> BMI ≥ 30.0
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+<div class="text-center py-5">
+    <i class="fas fa-user fa-3x text-muted mb-3"></i>
+    <h4 class="text-muted">Brak danych osobistych</h4>
+    <p class="text-muted">Dodaj swoje pierwsze pomiary aby rozpocząć śledzenie!</p>
+    <a href="{{ url_for('add_personal') }}" class="btn btn-info">
+        <i class="fas fa-plus"></i> Dodaj Pierwszy Pomiar
+    </a>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if weight_chart %}
+<script>
+    var weightChart = {{ weight_chart|safe }};
+    Plotly.newPlot('weight-chart', weightChart.data, weightChart.layout, {responsive: true});
+</script>
+{% endif %}
+
+{% if bmi_chart %}
+<script>
+    var bmiChart = {{ bmi_chart|safe }};
+    Plotly.newPlot('bmi-chart', bmiChart.data, bmiChart.layout, {responsive: true});
+</script>
+{% endif %}
+
+{% if body_composition_chart %}
+<script>
+    var bodyCompositionChart = {{ body_composition_chart|safe }};
+    Plotly.newPlot('body-composition-chart', bodyCompositionChart.data, bodyCompositionChart.layout, {responsive: true});
+</script>
+{% endif %}
+
+{% if calories_chart %}
+<script>
+    var caloriesChart = {{ calories_chart|safe }};
+    Plotly.newPlot('calories-chart', caloriesChart.data, caloriesChart.layout, {responsive: true});
+</script>
+{% endif %}
+
+{% if water_chart %}
+<script>
+    var waterChart = {{ water_chart|safe }};
+    Plotly.newPlot('water-chart', waterChart.data, waterChart.layout, {responsive: true});
+</script>
+{% endif %}
+
+{% if activity_chart %}
+<script>
+    var activityChart = {{ activity_chart|safe }};
+    Plotly.newPlot('activity-chart', activityChart.data, activityChart.layout, {responsive: true});
+</script>
+{% endif %}
+
+{% if meal_distribution_chart %}
+<script>
+    var mealDistributionChart = {{ meal_distribution_chart|safe }};
+    Plotly.newPlot('meal-distribution-chart', mealDistributionChart.data, mealDistributionChart.layout, {responsive: true});
+</script>
+{% endif %}
+{% endblock %}
